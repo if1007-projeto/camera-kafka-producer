@@ -1,4 +1,6 @@
-# Camera Publisher
+# Camera Kafka Producer
+
+Este projeto é um script feito em python para publicar os frames produzidos por uma ou mais câmeras em um tópico do kafka.
 
 ## Pré-requisitos
 
