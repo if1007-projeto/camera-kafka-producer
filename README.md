@@ -44,7 +44,7 @@ O argumento `--camera-source` ou `-s` suporta múltiplas urls separadas por vír
 -t kafka-python-topic
 ```
 
-### Mais informações
+### Obter mais informações
 
 Para obter mais informações, utilize o comando abaixo.
 
