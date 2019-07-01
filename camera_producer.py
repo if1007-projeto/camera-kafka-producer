@@ -2,6 +2,8 @@ import sys
 import time
 import threading
 
+import cv2
+
 class CameraProducer:
 
     def __init__(self, camera, kafka_producer, kafka_topic):
