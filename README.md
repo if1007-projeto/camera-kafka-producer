@@ -54,6 +54,21 @@ Para obter mais informações, utilize o comando abaixo.
 ./capture --help
 ```
 
+### Testando o ambiente
+
+Para testar o ambiente, vamos transmitir um vídeo de um arquivo local. Dentro da raiz do projeto, utilize o comando abaixo para fazer o download de um vídeo exemplo.
+
+```bash
+mkdir -pv data
+wget file-examples.com/wp-content/uploads/2017/04/file_example_MP4_1280_10MG.mp4 -O data/video.mp4
+```
+
+Após isso, utilize o comando abaixo para iniciar os serviços.
+
+```bash
+docker-compose up
+```
+
 ## Links utilizados
 
 * [Distributed Video Streaming with Python and Kafka](https://medium.com/@kevin.michael.horan/distributed-video-streaming-with-python-and-kafka-551de69fe1dd)

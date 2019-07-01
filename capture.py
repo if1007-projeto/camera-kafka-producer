@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 
+import time
 import argparse
+import cv2
+
+from kafka import KafkaProducer
 from camera_producer import CameraProducer
+
+connection_retries = 1000
+
 
 def get_command_line_arguments():
     parser = argparse.ArgumentParser(
@@ -20,6 +27,17 @@ def get_command_line_arguments():
     return args
 
 
+def try_connect_kafka():
+    for attempt in range(connection_retries):
+        print('attempt to connect to kafka - %d tries' % (attempt))
+        try:
+            producer = KafkaProducer(bootstrap_servers=kafka_url)
+            return producer
+        except:
+            print('error connecting')
+        time.sleep(1)
+
+
 args = get_command_line_arguments()
 
 urls_comma_separated = args.camera_urls
@@ -27,7 +45,26 @@ kafka_topic = args.kafka_topic
 kafka_url = args.kafka_url
 camera_urls = urls_comma_separated.split(',')
 
+print('kafka -- url: %s, topic: %s' % (kafka_url, kafka_topic))
+
+# producer = try_connect_kafka()
+
+producer = None
+
+async_mode = len(camera_urls) > 1
+
+time.sleep(5)
+
 for camera_url in camera_urls:
     print('start \"%s\" source input' % (camera_url))
-    camera_producer = CameraProducer(camera_url=camera_url, kafka_url=kafka_url, kafka_topic=kafka_topic)
-    camera_producer.start(interval=0.0001, async_mode=True)
+
+    try:
+        camera = cv2.VideoCapture(camera_url)
+        camera_producer = CameraProducer(
+            camera=camera,
+            kafka_producer=producer,
+            kafka_topic=kafka_topic)
+        camera_producer.start(interval=0.0001, async_mode=async_mode)
+
+    except:
+        print('error initializing video capture on url %s' % (camera_url))
