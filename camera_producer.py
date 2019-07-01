@@ -23,9 +23,9 @@ class CameraProducer:
         """
 
         frame_number = 1
-        while camera.isOpened():
+        while self.camera.isOpened():
             try:
-                self.__capture_frame_and_publish(camera)
+                self.__capture_frame_and_publish(self.camera)
 
                 print('read %d frame(s)' % (frame_number))
                 frame_number += 1
@@ -36,7 +36,7 @@ class CameraProducer:
                 print("\nExiting.")
                 sys.exit(1)
 
-        camera.release()
+        self.camera.release()
 
     def start(self, async_mode=False, interval=0.2):
         if async_mode == True:
