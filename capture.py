@@ -3,6 +3,7 @@
 import time
 import argparse
 import cv2
+import traceback
 
 from kafka import KafkaProducer
 from camera_producer import CameraProducer
@@ -65,4 +66,4 @@ for camera_url in camera_urls:
         camera_producer.start(interval=0.0001, async_mode=async_mode)
 
     except:
-        print('error initializing video capture on url %s' % (camera_url))
+        traceback.print_exc()

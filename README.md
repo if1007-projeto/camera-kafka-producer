@@ -21,7 +21,7 @@ Este projeto é um script feito em python para publicar os frames produzidos por
 Para publicar o vídeo de uma câmera, é preciso especificar os seguintes parâmetros.
 
 * Url de origem do vídeo - `-s` ou `--source-input`;
-* Url do servidor onde o kafka está funcionando - `-d` ou `--kafka-url`;
+* Url do servidor onde o kafka está hospedado - `-d` ou `--kafka-url`;
 * Tópico para publicar os frames da câmera - `-t` ou `--kafka-topic`.
 
 ##### Exemplo
