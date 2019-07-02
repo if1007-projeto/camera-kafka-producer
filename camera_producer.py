@@ -3,6 +3,13 @@ import time
 import threading
 
 import cv2
+import struct
+import traceback
+
+import logging
+
+# create logger
+module_logger = logging.getLogger('spam_application.auxiliary')
 
 
 class CameraProducer:
@@ -11,6 +18,7 @@ class CameraProducer:
         self.camera = camera
         self.kafka_producer = kafka_producer
         self.kafka_topic = kafka_topic
+        self.logger = logging.getLogger('CameraProducer')
 
     def __capture_frame_and_publish(self, camera):
         success, frame = camera.read()
@@ -23,17 +31,25 @@ class CameraProducer:
         """
 
         frame_number = 1
+        start_time = time.time()
         while self.camera.isOpened():
             try:
                 self.__capture_frame_and_publish(self.camera)
 
-                print('read %d frame(s)' % (frame_number))
                 frame_number += 1
+
+                elapsed_time = time.time() - start_time
+                if elapsed_time > 1: 
+                    start_time = time.time()
+                    self.logger.debug('read %d frame(s)' % (frame_number))
 
                 time.sleep(interval)
 
             except:
-                print("\nExiting.")
+
+                traceback.print_exc()
+
+                self.logger.error("\nExiting.")
                 sys.exit(1)
 
         self.camera.release()

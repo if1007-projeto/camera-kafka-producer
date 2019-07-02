@@ -4,9 +4,12 @@ import time
 import argparse
 import cv2
 import traceback
+import logging
 
 from kafka import KafkaProducer
 from camera_producer import CameraProducer
+
+logger = logging.getLogger('CameraProducer')
 
 connection_retries = 1000
 
@@ -30,12 +33,16 @@ def get_command_line_arguments():
 
 def try_connect_kafka():
     for attempt in range(connection_retries):
-        print('attempt to connect to kafka - %d tries' % (attempt))
+        logger.debug('attempt to connect to kafka - %d tries' % (attempt))
         try:
             producer = KafkaProducer(bootstrap_servers=kafka_url)
+
             return producer
+
         except:
-            print('error connecting')
+            logger.error('error connecting')
+            traceback.print_exc()
+            
         time.sleep(1)
 
 
@@ -46,16 +53,14 @@ kafka_topic = args.kafka_topic
 kafka_url = args.kafka_url
 camera_urls = urls_comma_separated.split(',')
 
-print('kafka -- url: %s, topic: %s' % (kafka_url, kafka_topic))
+logger.info('kafka -- url: %s, topic: %s' % (kafka_url, kafka_topic))
 
 producer = try_connect_kafka()
 
 async_mode = len(camera_urls) > 1
 
-time.sleep(5)
-
 for camera_url in camera_urls:
-    print('start \"%s\" source input' % (camera_url))
+    logger.info('start \"%s\" source input' % (camera_url))
 
     try:
         camera = cv2.VideoCapture(camera_url)
