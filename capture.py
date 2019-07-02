@@ -47,9 +47,7 @@ camera_urls = urls_comma_separated.split(',')
 
 print('kafka -- url: %s, topic: %s' % (kafka_url, kafka_topic))
 
-# producer = try_connect_kafka()
-
-producer = None
+producer = try_connect_kafka()
 
 async_mode = len(camera_urls) > 1
 

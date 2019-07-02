@@ -15,7 +15,7 @@ class CameraProducer:
     def __capture_frame_and_publish(self, camera):
         success, frame = camera.read()
         ret, buffer = cv2.imencode('.jpg', frame)
-        # self.kafka_producer.send(self.kafka_topic, buffer.tobytes())
+        self.kafka_producer.send(self.kafka_topic, buffer.tobytes())
 
     def __start_producer(self, interval):
         """
