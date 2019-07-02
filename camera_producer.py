@@ -11,6 +11,8 @@ import logging
 # create logger
 module_logger = logging.getLogger('spam_application.auxiliary')
 
+retry_time = 5
+display_status_interval = 1
 
 class CameraProducer:
 
@@ -30,7 +32,7 @@ class CameraProducer:
         Publish camera video stream to specified Kafka topic.
         """
 
-        frame_number = 1
+        frame_number = 0
         start_time = time.time()
         while self.camera.isOpened():
             try:
@@ -39,18 +41,15 @@ class CameraProducer:
                 frame_number += 1
 
                 elapsed_time = time.time() - start_time
-                if elapsed_time > 1: 
+                if elapsed_time > display_status_interval: 
                     start_time = time.time()
                     self.logger.debug('read %d frame(s)' % (frame_number))
 
-                time.sleep(interval)
+            except Exception as e:
+                self.logger.error("error reading camera: %s" % str(e))
+                time.sleep(retry_time)
 
-            except:
-
-                traceback.print_exc()
-
-                self.logger.error("\nExiting.")
-                sys.exit(1)
+            time.sleep(interval)
 
         self.camera.release()
 
