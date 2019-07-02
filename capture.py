@@ -9,6 +9,8 @@ import logging
 from kafka import KafkaProducer
 from camera_producer import CameraProducer
 
+logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger('CameraProducer')
 
 connection_retries = 1000

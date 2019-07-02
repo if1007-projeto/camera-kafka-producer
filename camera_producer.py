@@ -14,6 +14,7 @@ module_logger = logging.getLogger('spam_application.auxiliary')
 retry_time = 5
 display_status_interval = 1
 
+
 class CameraProducer:
 
     def __init__(self, camera, kafka_producer, kafka_topic):
@@ -24,7 +25,17 @@ class CameraProducer:
 
     def __capture_frame_and_publish(self, camera):
         success, frame = camera.read()
-        ret, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+        if success == False:
+            self.logger.error("error reading camera frame")
+
+        ret, buffer = cv2.imencode(
+            '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+
+        if ret == False:
+            self.logger.error("error encoding image")
+            return
+
+        self.logger.info("writing %d bytes" % (len(buffer.tobytes())))
         self.kafka_producer.send(self.kafka_topic, buffer.tobytes())
 
     def __start_producer(self, interval):
@@ -41,9 +52,9 @@ class CameraProducer:
                 frame_number += 1
 
                 elapsed_time = time.time() - start_time
-                if elapsed_time > display_status_interval: 
+                if elapsed_time > display_status_interval:
                     start_time = time.time()
-                    self.logger.debug('read %d frame(s)' % (frame_number))
+                    self.logger.info('read %d frame(s)' % (frame_number))
 
             except Exception as e:
                 self.logger.error("error reading camera: %s" % str(e))
