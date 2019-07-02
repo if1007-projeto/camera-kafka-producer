@@ -35,7 +35,6 @@ class CameraProducer:
             self.logger.error("error encoding image")
             return
 
-        self.logger.info("writing %d bytes" % (len(buffer.tobytes())))
         self.kafka_producer.send(self.kafka_topic, buffer.tobytes())
 
     def __start_producer(self, interval):
