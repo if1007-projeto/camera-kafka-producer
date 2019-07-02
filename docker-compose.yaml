@@ -29,9 +29,11 @@ services:
     depends_on:
       - camera1
     environment:
-      KAFKA_URL: kafka:9092
+      KAFKA_URL: kafka:29092
+      KAFKA_TOPIC: example-stream
       SOURCE_URLS: http://camera1/live.mjpg
     networks:
+      - default
       - face-detection-processor_default
 
 networks:
