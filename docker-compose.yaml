@@ -30,7 +30,7 @@ services:
       - camera1
     environment:
       KAFKA_URL: kafka:29092
-      KAFKA_TOPIC: example-stream
+      KAFKA_TOPIC: frames
       SOURCE_URLS: http://camera1/live.mjpg
     networks:
       - default
