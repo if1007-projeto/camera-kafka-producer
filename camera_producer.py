@@ -27,13 +27,14 @@ class CameraProducer:
         success, frame = camera.read()
         if success == False:
             self.logger.error("error reading camera frame")
+            # return False
 
         ret, buffer = cv2.imencode(
-            '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+            '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
 
         if ret == False:
             self.logger.error("error encoding image")
-            return
+            return False
 
         self.kafka_producer.send(self.kafka_topic, buffer.tobytes())
 
@@ -46,7 +47,10 @@ class CameraProducer:
         start_time = time.time()
         while self.camera.isOpened():
             try:
-                self.__capture_frame_and_publish(self.camera)
+                success = self.__capture_frame_and_publish(self.camera)
+                if success == False:
+                    time.sleep(2)
+                    continue
 
                 frame_number += 1
 
@@ -58,8 +62,6 @@ class CameraProducer:
             except Exception as e:
                 self.logger.error("error reading camera: %s" % str(e))
                 time.sleep(retry_time)
-
-            time.sleep(interval)
 
         self.camera.release()
 
