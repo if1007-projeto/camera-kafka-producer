@@ -13,7 +13,7 @@ if [[ -z "${KAFKA_URL}" ]]; then
 fi
 
 # check if kafka topic is assigned
-if [[ -z "${KAFKA_URL}" ]]; then
+if [[ -z "${KAFKA_TOPIC}" ]]; then
     echo "Environment variable \$KAFKA_TOPIC is required, but has no value.";
     exit 1;
 fi
